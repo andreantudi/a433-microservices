@@ -1,0 +1,43 @@
+# Versi API yang didefinisikan
+apiVersion: apps/v1
+# Jenis objek Kubernetes (Deployement)
+kind: Deployment
+# Metadata untuk Deployment
+metadata:
+  # Nama Deplyoment
+  name: karsajobs-frontend
+# Spesifikasi untuk Deployment
+spec: 
+  # Jumlah replika Pod yang akan dibuat
+  replicas: 1
+  # Selektor untuk memilih Pod
+  selector:
+    # Pod yang dipilih harus memiliki label sesuai ketentuan (app: frontend)
+    matchLabels:
+      app: frontend
+  # Template untuk membuat Pod
+  template:
+    # Metadata untuk Pod
+    metadata:
+      # Label Pod
+      labels:
+        app: frontend
+    # Sepesifikasi untuk Pod
+    spec:
+      # Konfigurasi container dalam Pod
+      containers:
+        # Nama Container
+      - name: karsajobs-ui
+        # Nama image yang digunakan untuk membuat container
+        image: andreantudi/karsajobs-ui:latest
+        # Mekanisme pull image (image di-pull setiap kali Pod dimulai)
+        imagePullPolicy: Always
+        ports:
+        # Port yang digunakan untuk mengakses container
+        - containerPort: 8000
+        # Environment variables yang dibutuhkan aplikasi
+        env:
+          # Nama environment variable
+        - name: VUE_APP_BACKEND
+          # Nilai environment variable
+          value: 'http://192.168.49.2:32139'
