@@ -1,0 +1,48 @@
+version: '2.1'
+
+services:
+  order-service:
+    image: andreantudi/order-service
+    container_name: order-service
+    ports:
+      - 3000:3000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links:
+      - rabbitmq
+    networks:
+      - rabbitmq_network
+  shipping-service:
+    image: andreantudi/shipping-service
+    container_name: shipping-service
+    ports:
+      - 3001:3001
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links:
+      - rabbitmq
+    networks:
+      - rabbitmq_network
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq
+    healthcheck:
+      test: "exit 0"
+    networks:
+      - rabbitmq_network
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:
+
+networks:
+  rabbitmq_network:
+    driver: bridge
